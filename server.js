@@ -22,7 +22,7 @@ function passwordMatches(users, name, password)
 }
 
 var userlist = {}
-userlist['timmy'] = "foobar";
+userlist['timmy'] = "foobar".hashCode;
 
 wss.on('connection', function (ws){
     console.log("user "+usercount+" connected");
@@ -32,12 +32,25 @@ wss.on('connection', function (ws){
 	    if (passwordMatches(userlist, data.username, data.password))
 	    {
 		ws.loggedin = true;
+		ws.username = data.username;
 	    }
-	} else if (user.loggedin) {
-	    console.log('got %s', message);
-	    wss.broadcast(ws.username+": "+message);
+	} else if (ws.loggedin && data.type === "chat") {
+	    console.log('got %s', data.message);
+	    wss.broadcast(ws.username+": "+data.message);
 	}
     });
     ws.username = "User"+usercount++;
     ws.send("Hello");
 });
+
+//hashes a string, for passwords (really insecure ones)
+String.prototype.hashCode = function() {
+  var hash = 0, i, chr, len;
+  if (this.length == 0) return hash;
+  for (i = 0, len = this.length; i < len; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
