@@ -26,15 +26,21 @@ function ready(){
     document.getElementById('passwordbox').onkeypress = function(e){
         if (!e) e = window.event;
         var keyCode = e.keyCode || e.which;
+        console.log("keypress");
         if (keyCode == '13'){
+            console.log("enter");
             var packet = {};
             packet.type = "login";
             packet.username = document.getElementById('usernamebox').value.trim();
-            packet.password = document.getElementById('passwordbox').value.trim().hashCode;
+            packet.password = document.getElementById('passwordbox').value.trim();
             ws.send(JSON.stringify(packet));
-            document.getElementById('loginBoxes').innerHTML += "<br>Login request sent1</br>";
+            document.getElementById('loginBoxes').innerHTML += "<br>Login request sent</br>";
             return false;
         }
+    }
+    
+    document.getElementById("registerbutton").onclick = function() {
+        document.getElementById('shadow').style.display = "block";
     }
 }
 
